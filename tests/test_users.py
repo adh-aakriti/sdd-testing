@@ -12,30 +12,46 @@ class TestUserRepositoryIntegration:
     def database(self):
         """Provide a connected database, and close it again afterwards."""
         # TODO: Create a Database instance
+        db = Database()
         # TODO: Call connect() on the database
+        db.connect()
         # TODO: Use yield to hand the database to the test
+        yield db
         # TODO: After the yield, call disconnect() on the database
-        raise NotImplementedError("TODO: Implement this fixture")
+        db.disconnect()                                                  
 
     @pytest.fixture
     def user_repo(self, database):
         """Provide a UserRepository backed by the connected database."""
         # TODO: Create and return a UserRepository with the database fixture
-        raise NotImplementedError("TODO: Implement this fixture")
+        return UserRepository(database) 
 
     def test_create_and_retrieve_user(self, user_repo):
         """Test creating and then reading back a user."""
         # TODO: Create a user with id="123", name="John Doe", email="john@example.com"
+        user_id = "123"
+        name = "John Doe"
+        email = "john@example.com"
+        user_repo.create_user(id, name, email)
         # TODO: Assert user['id'] == "123"
+        assert user_repo.get_user(id)['id'] == user_id    
         # TODO: Assert user['name'] == "John Doe"
-        # TODO: Assert user['email'] == "john@example.com"
-        # TODO: Assert 'created_at' is in user
+        assert user_repo.get_user(id)['name'] == name
 
+        # TODO: Assert user['email'] == "john@example.com"
+        assert user_repo.get_user(id)['email'] == "john@example.com"
+        # TODO: Assert 'created_at' is in user
+        assert 'created_at' in user_repo.get_user(id)
         # TODO: Retrieve the user by id "123"
+        retrieved = user_repo.get_user(user_id)
         # TODO: Assert the retrieved user is not None
+        assert retrieved is not None
         # TODO: Assert retrieved['id'] == "123"
+        assert retrieved['id'] == user_id
         # TODO: Assert retrieved['name'] == "John Doe"
-        assert False, "TODO: Implement this test"
+        assert retrieved['name'] == name
+        # TODO: Assert retrieved['email'] == "john@example.com"
+        assert retrieved['email'] == email  
 
     def test_create_user_with_invalid_email(self, user_repo):
         """Test that creating a user with an invalid email raises."""
