@@ -48,20 +48,29 @@ class TestCalculateTotalPrice:
 
     def test_negative_price_raises_error(self):
         """Test that negative price raises ValueError."""
+        # TODO: Use pytest.raises(ValueError, match="must be non-negative")
         with pytest.raises(ValueError, match="must be non-negative"):
             calculate_total_price(-10.0, 5)
+        # TODO: Call calculate_total_price with price=-10.0, quantity=5
 
     def test_negative_quantity_raises_error(self):
         """Test that negative quantity raises ValueError."""
+        # TODO: Use pytest.raises(ValueError, match="must be non-negative")
         with pytest.raises(ValueError, match="must be non-negative"):
             calculate_total_price(10.0, -5)
+        # TODO: Call calculate_total_price with price=10.0, quantity=-5
 
     def test_invalid_discount_over_100(self):
         """Test that discount over 100 raises ValueError."""
+        # TODO: Use pytest.raises(ValueError, match="must be between 0 and 100")
+        # TODO: Call calculate_total_price with discount=101
         with pytest.raises(ValueError, match="must be between 0 and 100"):
             calculate_total_price(10.0, 5, discount_percent=101)
 
+            
     def test_invalid_discount_negative(self):
         """Test that negative discount raises ValueError."""
+        # TODO: Use pytest.raises(ValueError, match="must be between 0 and 100")
+        # TODO: Call calculate_total_price with discount=-10
         with pytest.raises(ValueError, match="must be between 0 and 100"):
             calculate_total_price(10.0, 5, discount_percent=-10)

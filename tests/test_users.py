@@ -1,5 +1,7 @@
 """Exercise 2: integration tests and fixtures with teardown."""
 
+from unicodedata import name
+
 import pytest
 
 from orderflow.users import Database, UserRepository
@@ -29,12 +31,12 @@ class TestUserRepositoryIntegration:
     def test_create_and_retrieve_user(self, user_repo):
         """Test creating and then reading back a user."""
         # TODO: Create a user with id="123", name="John Doe", email="john@example.com"
-        user_id = "123"
+        id = "123"
         name = "John Doe"
         email = "john@example.com"
         user_repo.create_user(id, name, email)
         # TODO: Assert user['id'] == "123"
-        assert user_repo.get_user(id)['id'] == user_id    
+        assert user_repo.get_user(id)['id'] == "123"   
         # TODO: Assert user['name'] == "John Doe"
         assert user_repo.get_user(id)['name'] == name
 
@@ -43,11 +45,11 @@ class TestUserRepositoryIntegration:
         # TODO: Assert 'created_at' is in user
         assert 'created_at' in user_repo.get_user(id)
         # TODO: Retrieve the user by id "123"
-        retrieved = user_repo.get_user(user_id)
+        retrieved = user_repo.get_user(id)
         # TODO: Assert the retrieved user is not None
         assert retrieved is not None
         # TODO: Assert retrieved['id'] == "123"
-        assert retrieved['id'] == user_id
+        assert retrieved['id'] == id
         # TODO: Assert retrieved['name'] == "John Doe"
         assert retrieved['name'] == name
         # TODO: Assert retrieved['email'] == "john@example.com"
@@ -57,25 +59,33 @@ class TestUserRepositoryIntegration:
         """Test that creating a user with an invalid email raises."""
         # TODO: Use pytest.raises(ValueError, match="Invalid email")
         # TODO: Try to create a user with email="invalid-email"
-        assert False, "TODO: Implement this test"
-
+        with pytest.raises(ValueError, match="Invalid email format"):
+            user_repo.create_user("124", "Jane Doe", "invalid-email")   
+    
     def test_get_nonexistent_user(self, user_repo):
         """Test retrieving a user that does not exist."""
         # TODO: Get the user with id="999"
+        user = user_repo.get_user("999")
         # TODO: Assert the result is None
-        assert False, "TODO: Implement this test"
+        assert user is None
 
     def test_database_not_connected_raises_error(self):
         """Test that operations fail when the database is not connected."""
         # TODO: Create a Database instance and do NOT connect it
+        db = Database()
         # TODO: Create a UserRepository with this database
+        user_repo = UserRepository(db)
         # TODO: Use pytest.raises(ConnectionError, match="not connected")
         # TODO: Try to create a user
-        assert False, "TODO: Implement this test"
+        with pytest.raises(ConnectionError, match="Database not connected"):
+            user_repo.create_user("125", "Alice", "alice@example.com")
 
     def test_get_on_disconnected_database_raises_error(self):
         """Test that reads fail too, not only writes."""
         # TODO: Create a UserRepository over an unconnected Database
+        db = Database()
+        user_repo = UserRepository(db)
         # TODO: Use pytest.raises(ConnectionError, match="not connected")
         # TODO: Try to read a user
-        assert False, "TODO: Implement this test"
+        with pytest.raises(ConnectionError, match="Database not connected"):
+            user_repo.get_user("123")
